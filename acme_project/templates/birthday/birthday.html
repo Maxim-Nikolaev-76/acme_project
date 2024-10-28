@@ -1,5 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+  <form>
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+  </form>
+  {% with data=request.GET %}
+    <!-- В дальнейшем используем имя data вместо request.GET -->
+    {% if form.is_valid %}
+      <h2>Привет, {{ data.first_name }} {{ data.last_name }}</h2>
+       <!-- Если до дня рождения 0 дней... -->
+        {% if birthday_countdown == 0 %}
+        <!-- ...выводим поздравление: -->
+            С днём рождения!
+        <!-- Если до дня рождения не ноль дней... -->
+        {% else %}
+            <!-- ...сообщаем, сколько осталось ждать: -->
+            Осталось дней до дня рождения: {{ birthday_countdown }}!
+        {% endif %}
+    {% endif %}
+  <!-- Когда заканчивается область шаблона, где нужна переменная, 
+    закрываем тег with -->
+  {% endwith %}
 {% endblock %}
