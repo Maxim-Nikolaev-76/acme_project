@@ -1,0 +1,24 @@
+<!-- C:/Dev/guile.html -->
+<html>
+  <head>
+    <title>Коварство</title>
+  </head>
+  <body style="padding:40px;">
+    <!-- Адрес отправки формы — проект ACME! -->
+    <form action="http://127.0.0.1:8000/birthday/" method="post">
+      <p>
+        <label>Имя</label><br>
+        <input type="text" name="first_name" maxlength="20" required>
+      </p>
+      <p>
+        <label>Фамилия</label><br>
+        <input type="text" name="last_name" maxlength="20">
+      </p>
+      <p>
+        <label>Дата рождения</label><br>
+        <input type="date" name="birthday" required>
+      </p>
+      <button type="submit">Отправить</button>
+    </form>
+  </body>
+</html>
