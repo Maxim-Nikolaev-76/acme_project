@@ -7,6 +7,9 @@ from django.urls import reverse_lazy
 from .forms import BirthdayForm
 from .utils import calculate_birthday_countdown
 from .models import Birthday
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
 # class BirthdayMixin:
@@ -18,8 +21,19 @@ from .models import Birthday
 #     form_class = BirthdayForm
 #     # template_name = 'birthday/birthday.html'
 
+@login_required
+def simple_view(request):
+    return HttpResponse('Страница для залогиненных пользователей!')
 
-class BirthdayCreateView(CreateView):
+
+class OnlyAuthorMixin(UserPassesTestMixin):
+
+    def test_func(self):
+        object = self.get_object()
+        return object.author == self.request.user
+
+
+class BirthdayCreateView(LoginRequiredMixin, CreateView):
     form_class = BirthdayForm
     model = Birthday
     # # fields = '__all__'
@@ -28,8 +42,14 @@ class BirthdayCreateView(CreateView):
     # template_name = 'birthday/birthday.html'
     # success_url = reverse_lazy('birthday:list')
 
+    def form_valid(self, form):
+        # Присвоить полю author объект пользователя из запроса.
+        form.instance.author = self.request.user
+        # Продолжить валидацию, описанную в форме.
+        return super().form_valid(form)
 
-class BirthdayUpdateView(UpdateView):
+
+class BirthdayUpdateView(OnlyAuthorMixin, UpdateView):
     form_class = BirthdayForm
     model = Birthday
     # form_class = BirthdayForm
@@ -37,7 +57,7 @@ class BirthdayUpdateView(UpdateView):
     # success_url = reverse_lazy('birthday:list')
 
 
-class BirthdayDeleteView(DeleteView):
+class BirthdayDeleteView(OnlyAuthorMixin, DeleteView):
     # pass
     model = Birthday
     success_url = reverse_lazy('birthday:list')

@@ -16,7 +16,7 @@ class BirthdayForm(forms.ModelForm):
     #                            validators=(real_age,))
     class Meta:
         model = Birthday
-        fields = '__all__'
+        exclude = ('author',)
         widgets = {
             'birthday': forms.DateInput(attrs={'type': 'date'})
         }
